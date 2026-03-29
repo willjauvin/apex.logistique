@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
 import { AIService } from "@/modules/apex-ai/ai-service";
+import type { AIProvider, AIMessage } from "@/modules/apex-ai/types";
 
 export async function POST(req: Request) {
   try {
-    const { message } = await req.json();
+    const body = await req.json();
+    const {
+      message,
+      conversationId = "default",
+      provider = "gemini",
+    }: {
+      message: string;
+      conversationId?: string;
+      provider?: AIProvider;
+    } = body;
 
     if (!message) {
       return NextResponse.json(
@@ -13,14 +23,25 @@ export async function POST(req: Request) {
     }
 
     const ai = new AIService({
-      provider: "gemini",
-      apiKey: process.env.GEMINI_API_KEY,
-      model: "gemini-1.5-flash",
+      provider,
+      apiKey:
+        provider === "gemini"
+          ? process.env.GEMINI_API_KEY
+          : provider === "openai"
+          ? process.env.OPENAI_API_KEY
+          : undefined,
+      model:
+        provider === "gemini"
+          ? "gemini-1.5-flash"
+          : provider === "openai"
+          ? "gpt-4o-mini"
+          : "llama3",
       temperature: 0.7,
       maxTokens: 1000,
+      baseURL: provider === "local" ? "http://localhost:11434" : undefined,
     });
 
-    const response = await ai.chat([
+    const messages: AIMessage[] = [
       {
         role: "system",
         content: "Tu es Apex, une IA intelligente pour business et logistique.",
@@ -29,60 +50,25 @@ export async function POST(req: Request) {
         role: "user",
         content: message,
       },
-    ]);
+    ];
+
+    const response = await ai.chat(messages);
 
     return NextResponse.json({
       success: true,
       response: response.content,
+      metadata: {
+        provider,
+        conversationId,
+      },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Chat API error:", error);
 
     return NextResponse.json(
-      { error: "Erreur serveur" },
-      { status: 500 }
-    );
-  }
-}
-    return NextResponse.json({
-      success: true,
-      response: mockResponse.message,
-      confidence: mockResponse.confidence,
-      suggestions: mockResponse.suggestions,
-      metadata: mockResponse.metadata,
-      conversationHistory: [],
-    });
-  } catch (error) {
-    console.error('Chat API error:', error);
-    return NextResponse.json(
-      { error: 'Failed to process message' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const conversationId = searchParams.get('conversationId');
-
-    if (!conversationId) {
-      return NextResponse.json(
-        { error: 'conversationId is required' },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      conversationId,
-      history: [],
-      messageCount: 0,
-    });
-  } catch (error) {
-    console.error('Chat history API error:', error);
-    return NextResponse.json(
-      { error: 'Failed to retrieve conversation history' },
+      {
+        error: error instanceof Error ? error.message : "Failed to process message",
+      },
       { status: 500 }
     );
   }
