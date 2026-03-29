@@ -1,40 +1,49 @@
-import { NextResponse } from 'next/server';
-import { AIService } from '@/modules/apex-ai/ai-service';
+import { NextResponse } from "next/server";
+import { AIService } from "@/modules/apex-ai/ai-service";
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
-    const { message, conversationId, moduleContext } = body;
+    const { message } = await req.json();
 
-    if (!message || !conversationId) {
+    if (!message) {
       return NextResponse.json(
-        { error: 'Message and conversationId are required' },
+        { error: "Message requis" },
         { status: 400 }
       );
     }
 
-    const aiService = new AIService({
-      provider: 'openai',
-      model: 'gpt-4',
+    const ai = new AIService({
+      provider: "gemini",
+      apiKey: process.env.GEMINI_API_KEY,
+      model: "gemini-1.5-flash",
       temperature: 0.7,
       maxTokens: 1000,
     });
 
-    const mockResponse = {
-      message: `Hello! I'm Apex AI. I can help you with logistics optimization, data analysis, and business insights. How can I assist you today?`,
-      confidence: 0.95,
-      suggestions: [
-        'Analyze my logistics performance',
-        'Show me route optimization opportunities',
-        'What are my key metrics?',
-        'Help me understand my data',
-      ],
-      metadata: {
-        provider: 'demo',
-        timestamp: new Date().toISOString(),
+    const response = await ai.chat([
+      {
+        role: "system",
+        content: "Tu es Apex, une IA intelligente pour business et logistique.",
       },
-    };
+      {
+        role: "user",
+        content: message,
+      },
+    ]);
 
+    return NextResponse.json({
+      success: true,
+      response: response.content,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Erreur serveur" },
+      { status: 500 }
+    );
+  }
+}
     return NextResponse.json({
       success: true,
       response: mockResponse.message,
