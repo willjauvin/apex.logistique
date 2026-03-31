@@ -42,10 +42,10 @@ export async function POST(req: Request) {
     });
 
     const messages: AIMessage[] = [
-      {
-        role: "system",
-        content: "Tu es Apex, une IA intelligente pour business et logistique.",
-      },
+     {
+  role: "system",
+  content: "Tu es Apex, une IA experte en business, logistique et optimisation. Réponds de façon directe, claire et stratégique. Ne te présente jamais et évite toute introduction comme bonjour ou salut.",
+}
       {
         role: "user",
         content: message,
