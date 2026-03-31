@@ -23,26 +23,18 @@ export default function ChatInterface({
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setMessages([
       {
-        id: crypto.randomUUID(),
+        id: '1',
         role: 'assistant',
         content:
-          "Pose-moi ta question. Je peux t'aider en stratégie, logistique, analyse et développement d'entreprise.",
+          "Hello! I'm Apex AI, your intelligent business assistant. I can help you analyze data, answer questions, and provide strategic recommendations. How can I assist you today?",
         timestamp: new Date(),
       },
-    ]);
-
-    setSuggestions([
-      'Comment rendre SimpliShop plus rentable ?',
-      'Donne-moi une stratégie de croissance',
-      'Que devrais-je améliorer en priorité ?',
-      'Analyse mon projet Apex',
     ]);
   }, []);
 
@@ -98,10 +90,6 @@ export default function ChatInterface({
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
-
-      if (Array.isArray(data.suggestions) && data.suggestions.length > 0) {
-        setSuggestions(data.suggestions);
-      }
     } catch (error) {
       console.error('Erreur envoi message:', error);
 
@@ -129,13 +117,6 @@ export default function ChatInterface({
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setInput(suggestion);
-    setTimeout(() => {
-      textareaRef.current?.focus();
-    }, 50);
-  };
-
   return (
     <div className="flex flex-col h-full bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
       <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
@@ -146,7 +127,7 @@ export default function ChatInterface({
           <div>
             <h3 className="font-semibold text-slate-900">Apex AI Assistant</h3>
             <p className="text-xs text-slate-500">
-              Stratégie, logistique et analyse
+              Always here to help
             </p>
           </div>
         </div>
@@ -199,18 +180,9 @@ export default function ChatInterface({
             <div className="bg-slate-100 rounded-2xl px-4 py-3 shadow-sm">
               <p className="text-sm text-slate-500 mb-2">Apex réfléchit...</p>
               <div className="flex gap-2">
-                <div
-                  className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
-                  style={{ animationDelay: '0ms' }}
-                />
-                <div
-                  className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
-                  style={{ animationDelay: '150ms' }}
-                />
-                <div
-                  className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
-                  style={{ animationDelay: '300ms' }}
-                />
+                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" />
+                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
           </div>
@@ -219,23 +191,6 @@ export default function ChatInterface({
         <div ref={messagesEndRef} />
       </div>
 
-      {suggestions.length > 0 && (
-        <div className="px-6 py-3 border-t border-slate-200 bg-slate-50">
-          <p className="text-xs text-slate-500 mb-2">Suggestions :</p>
-          <div className="flex flex-wrap gap-2">
-            {suggestions.map((suggestion, index) => (
-              <button
-                key={index}
-                onClick={() => handleSuggestionClick(suggestion)}
-                className="text-xs px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-full transition-colors"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       <div className="px-6 py-4 border-t border-slate-200 bg-white">
         <div className="flex gap-3 items-end">
           <textarea
@@ -243,7 +198,7 @@ export default function ChatInterface({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Écris ta question ici..."
+            placeholder="Ask me anything..."
             rows={1}
             className="flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none max-h-[120px]"
             disabled={loading}
@@ -254,12 +209,12 @@ export default function ChatInterface({
             disabled={!input.trim() || loading}
             className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? '...' : 'Envoyer'}
+            {loading ? '...' : 'Send'}
           </button>
         </div>
 
         <p className="text-xs text-slate-400 mt-2">
-          Entrée pour envoyer • Maj + Entrée pour une nouvelle ligne
+          Enter to send • Shift + Enter for new line
         </p>
       </div>
     </div>
