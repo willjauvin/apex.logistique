@@ -1,6 +1,8 @@
+
 import { NextResponse } from "next/server";
 import { AIService } from "@/modules/apex-ai/ai-service";
 import type { AIProvider, AIMessage } from "@/modules/apex-ai/types";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   try {
@@ -22,6 +24,13 @@ export async function POST(req: Request) {
       );
     }
 
+    const { data: history } = await supabaseAdmin
+      .from("messages")
+      .select("*")
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: true })
+      .limit(10);
+
     const ai = new AIService({
       provider,
       apiKey:
@@ -41,10 +50,10 @@ export async function POST(req: Request) {
       baseURL: provider === "local" ? "http://localhost:11434" : undefined,
     });
 
-  const messages: AIMessage[] = [
-  {
-    role: "system",
-    content: `
+    const messages: AIMessage[] = [
+      {
+        role: "system",
+        content: `
 Tu es Apex, une IA stratégique conçue pour aider à gérer, développer et optimiser des entreprises.
 
 Domaines principaux :
@@ -73,14 +82,34 @@ Format :
 - Pas de blabla
 - Pas de remplissage
 `,
-  },
-  {
-    role: "user",
-    content: message,
-  },
-];
+      },
+      ...(history || []).map((msg) => ({
+        role: msg.role as "user" | "assistant",
+        content: msg.content,
+      })),
+      {
+        role: "user",
+        content: message,
+      },
+    ];
+
+    await supabaseAdmin.from("messages").insert([
+      {
+        conversation_id: conversationId,
+        role: "user",
+        content: message,
+      },
+    ]);
 
     const response = await ai.chat(messages);
+
+    await supabaseAdmin.from("messages").insert([
+      {
+        conversation_id: conversationId,
+        role: "assistant",
+        content: response.content,
+      },
+    ]);
 
     return NextResponse.json({
       success: true,
@@ -95,7 +124,8 @@ Format :
 
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : "Failed to process message",
+        error:
+          error instanceof Error ? error.message : "Failed to process message",
       },
       { status: 500 }
     );
