@@ -41,16 +41,16 @@ export async function POST(req: Request) {
       baseURL: provider === "local" ? "http://localhost:11434" : undefined,
     });
 
-    const messages: AIMessage[] = [
-     {
-  role: "system",
-  content: "Tu es Apex, une IA experte en business, logistique et optimisation. Réponds de façon directe, claire et stratégique. Ne te présente jamais et évite toute introduction comme bonjour ou salut.",
-}
-      {
-        role: "user",
-        content: message,
-      },
-    ];
+   const messages: AIMessage[] = [
+  {
+    role: "system",
+    content: "Tu es Apex, une IA experte en business, logistique et optimisation. Réponds de façon directe, claire et stratégique. Ne te présente jamais et évite toute introduction comme bonjour ou salut.",
+  },
+  {
+    role: "user",
+    content: message,
+  },
+];
 
     const response = await ai.chat(messages);
 
