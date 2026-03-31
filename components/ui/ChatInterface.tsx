@@ -75,12 +75,15 @@ export default function ChatInterface({
 
       const data = await response.json();
 
-      const assistantMessage: Message = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: data.response || 'I apologize, but I encountered an error processing your request.',
-        timestamp: new Date(),
-      };
+     const assistantMessage: Message = {
+  id: crypto.randomUUID(),
+  role: 'assistant',
+  content:
+    data.response ||
+    data.error ||
+    "I apologize, but I encountered an error processing your request.",
+  timestamp: new Date(),
+};
 
       setMessages(prev => [...prev, assistantMessage]);
 
