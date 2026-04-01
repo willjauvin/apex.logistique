@@ -76,33 +76,33 @@ export default function HomePage() {
       </section>
 
       {/* ARCHITECTURE */}
-      <section className="container mx-auto px-6 pb-32">
-        <h2 className="text-4xl font-bold text-center mb-10">Architecture IA flexible</h2>
-        <p className="text-slate-300 text-center max-w-3xl mx-auto mb-16">
-          Apex Intel est conçu pour fonctionner avec plusieurs fournisseurs d’IA.
-          Vous pouvez basculer entre différents modèles (OpenAI, Anthropic, Azure, etc.)
-          sans modifier votre infrastructure.
-        </p>
+<section className="container mx-auto px-6 pb-32">
+  <h2 className="text-4xl font-bold text-center mb-10">Architecture IA avancée</h2>
+  <p className="text-slate-300 text-center max-w-3xl mx-auto mb-16">
+    Apex Intel repose sur une architecture d’intelligence artificielle conçue pour offrir
+    performance, fiabilité et évolutivité. Chaque module travaille en synergie pour analyser,
+    optimiser et automatiser vos opérations, sans complexité technique.
+  </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
 
-          <ArchitectureCard
-            title="Provider Agnostic"
-            text="Choisissez le modèle IA le plus performant pour votre cas d’usage."
-          />
+    <ArchitectureCard
+      title="Optimisée"
+      text="Une architecture pensée pour offrir des performances constantes, même à grande échelle."
+    />
 
-          <ArchitectureCard
-            title="Scalable"
-            text="Une architecture pensée pour croître avec votre entreprise."
-          />
+    <ArchitectureCard
+      title="Évolutive"
+      text="Apex grandit avec votre entreprise, sans nécessiter de refonte ou de configuration complexe."
+    />
 
-          <ArchitectureCard
-            title="Modulaire"
-            text="Activez uniquement les modules dont vous avez besoin."
-          />
+    <ArchitectureCard
+      title="Orchestrée"
+      text="Chaque module IA remplit un rôle précis et s’intègre parfaitement dans l’écosystème Apex."
+    />
 
-        </div>
-      </section>
+  </div>
+</section>
 
       {/* INTEGRATION SIMPLISHOPS */}
       <section className="container mx-auto px-6 pb-32">
