@@ -1,5 +1,22 @@
 import Link from "next/link";
 
+/* TYPES */
+type FeatureProps = {
+  icon: string;
+  title: string;
+  text: string;
+};
+
+type ArchitectureProps = {
+  title: string;
+  text: string;
+};
+
+type ModuleProps = {
+  title: string;
+  text: string;
+};
+
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-900/40 to-slate-900 text-white">
@@ -149,7 +166,7 @@ export default function HomePage() {
 
 /* COMPONENTS */
 
-function FeatureCard({ icon, title, text }) {
+function FeatureCard({ icon, title, text }: FeatureProps) {
   return (
     <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/10 hover:border-blue-400/40 transition-all">
       <div className="text-4xl mb-3">{icon}</div>
@@ -159,7 +176,7 @@ function FeatureCard({ icon, title, text }) {
   );
 }
 
-function ArchitectureCard({ title, text }) {
+function ArchitectureCard({ title, text }: ArchitectureProps) {
   return (
     <div className="bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/10">
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
@@ -168,7 +185,7 @@ function ArchitectureCard({ title, text }) {
   );
 }
 
-function ModuleCard({ title, text }) {
+function ModuleCard({ title, text }: ModuleProps) {
   return (
     <div className="bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/10 hover:border-blue-400/40 transition-all">
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
