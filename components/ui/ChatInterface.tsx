@@ -15,16 +15,34 @@ interface ChatInterfaceProps {
   onClose?: () => void;
 }
 
+function getOrCreateConversationId() {
+  if (typeof window === 'undefined') return 'default';
+
+  let id = localStorage.getItem('apex_conversation_id');
+
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem('apex_conversation_id', id);
+  }
+
+  return id;
+}
+
 export default function ChatInterface({
-  conversationId = crypto.randomUUID(),
+  conversationId,
   moduleContext,
   onClose,
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resolvedConversationId, setResolvedConversationId] = useState('default');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    setResolvedConversationId(conversationId || getOrCreateConversationId());
+  }, [conversationId]);
 
   useEffect(() => {
     setMessages([
@@ -71,7 +89,7 @@ export default function ChatInterface({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: currentInput,
-          conversationId,
+          conversationId: resolvedConversationId,
           moduleContext,
           provider: 'gemini',
         }),
