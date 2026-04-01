@@ -1,21 +1,14 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import "./globals.css";
 
-export const metadata: Metadata = {
-  title: 'Apex Intel - Modular AI Platform',
-  description: 'AI-powered logistics and business intelligence platform',
-}
+export const metadata = {
+  title: "Apex Intel",
+  description: "Plateforme IA modulaire pour opérations intelligentes",
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="antialiased">
-        {children}
-      </body>
+    <html lang="fr">
+      <body className="bg-slate-950 text-white">{children}</body>
     </html>
-  )
+  );
 }
